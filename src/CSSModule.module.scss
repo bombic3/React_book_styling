@@ -6,18 +6,23 @@
   padding: 1rem;
   color: white;
   font-size: 2rem;
+  // inverted가 .wrapper와 함게 사용되었을 때만 적용
+  &.inverted {
+    color: black;
+    background: white;
+    border: 1px solid black;
+  }
 }
 
-.inverted {
-  color: black;
-  background: white;
-  border: 1px solid black;
-}
 
 /* 특정 클래스가 웹 페이지에서 전역적으로 사용되는 경우
 글로벌 CSS 작성 */
 
-:global .something {
-  font-weight: 800;
-  color: aqua;
+:global {
+  // :global {}로 감싸기
+  .something {
+    font-weight: 800;
+    color: aqua;
+  }
+  // 쭉 다른 클래스 생성 가능
 }
