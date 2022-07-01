@@ -1,0 +1,64 @@
+// Sass란
+// - Sass(Syntactically Awesome Style Sheets)(문법적으로 매우 멋진 스타일시트)
+// - CSS 전처리기로 복잡한 작업 쉽게 가능
+// - 스타일 코드의 재활용성과 코드의 가독성 높아 유지 보수 수월
+// - .scss / .sass 확장자 두 가지 문법 다름
+//     - .scss : 기존 css 문법과 비슷
+//     - .sass : {} ; 사용 안 함
+//------------------------------------------
+// 변수 사용하기
+// $red: #fa5252;
+// $orange: #fd7e14;
+// $yellow: #fcc419;
+// $green: #40c057;
+// $blue: #339af0;
+// $indigo: #5c7cfa;
+// $violet: #7950f2;
+// // 믹스인 만들기(재사용되는 스타일 블록을 함수처럼 사용할 수 있음)
+// @mixin  square($size) {
+//   $calculated: 32px * $size;
+//   width: $calculated;
+//   height: $calculated;
+// }
+
+@import './styles/utils.scss';
+
+.SassComponent {
+  display: flex;
+  .box { // 일반 CSS에서는 .SassComponent .box
+    background: red;
+    cursor: pointer;
+    transition: all 0.3s ease-in;
+    &.red { // .red 클래스가 .box와 함께 사용되었을 때
+      background: $red;
+      @include square(1);
+    }
+    &.orange {
+      background: $orange;
+      @include square(2);
+    }
+    &.yellow {
+      background: $yellow;
+      @include square(3);
+    }
+    &.green {
+      background: $green;
+      @include square(4);
+    }
+    &.blue {
+      background: $blue;
+      @include square(5);
+    }
+    &.indigo {
+      background: $indigo;
+      @include square(6);
+    }
+    &.violet {
+      background: $violet;
+      @include square(7);
+    }
+    &:hover {
+      background: black;
+    }
+  }
+}

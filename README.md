@@ -42,3 +42,72 @@ $ yarn start
 ### 9.1.2 CSS Seletor
 
 - CSS 클래스가 특정 클래스 내부에 있는 경우에만 스타일 적용 (ex. .App .logo)
+  App.js
+
+```jsx
+import logo from "./logo.svg";
+import "./App.css";
+// CSS Seletor 사용하여 스타일링하기
+function App() {
+  return (
+    <div className="App">
+      <header>
+        <img src={logo} className="logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+```
+
+App.css
+
+```jsx
+/* CSS Seletor 사용하여 스타일링하기 */
+.App {
+  text-align: center;
+}
+
+/*  .App 안에 들어 있는 .logo */
+.App .logo {
+  height: 40vmin;
+  animation: App-logo-spin infinite 20s linear;
+}
+
+/* .App 안에 들어 있는 header 태그 */
+.App header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+/* .App 안에 들어 있는 a 태그 */
+.App a {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+```
+
+---
+
+## 9.2 Sass 사용하기
