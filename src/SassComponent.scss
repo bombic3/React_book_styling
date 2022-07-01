@@ -21,11 +21,21 @@
 //   height: $calculated;
 // }
 
-@import './styles/utils.scss';
+// @import './styles/utils.scss';
 
 .SassComponent {
   display: flex;
-  .box { // 일반 CSS에서는 .SassComponent .box
+
+  // SassComponent의 배경색을
+  // open-colors 팔레트 라이브러리에서 불러온 색으로
+  // 가로 크기에 따라 (768px) 바꿔줌
+  background: $oc-gray-2;
+  @include media('<768px') {
+    background: $oc-gray-9;
+  }
+  
+  // 일반 CSS에서는 .SassComponent .box
+  .box {
     background: red;
     cursor: pointer;
     transition: all 0.3s ease-in;
