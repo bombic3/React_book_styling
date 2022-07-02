@@ -497,19 +497,24 @@ $violet: #7950f2;
 
 - Sass의 장점 중 하나는 라이브러리를 쉽게 불러와서 사용할 수 있다는 것
 - yarn 을 통해 설치한 라이브러리를 사용하는 가장 기본적인 방법
+
   - 상대 경로를 사용하여 node_modules까지 들어가서 불러오는 방법
-  > @import ‘../../../node_modules/library/styles’;
+    > @import ‘../../../node_modules/library/styles’;
   - 같은 방법 ~ 로 함축
   - 물결 문자를 사용하면 자동으로 node_modules에서 라이브러리 디렉터리를 탐지하여 스타일을 불러 올 수 있음
-  > @import ‘~library/styles’;
+    > @import ‘~library/styles’;
+
   ***
+
   - 반응형 디자인을 쉽게 만들어 주는
     → include-media
     [include.media - Your larger context](https://www.include.media/)
   - 편리한 색상 팔레트
     → open-color
     [](https://www.npmjs.com/package/open-color)
+
   ***
+
   1. $ yarn add open-color include-media 명령어 입력하여 설치
 
      > $ yarn add open-color include-media
@@ -691,6 +696,7 @@ export default App;
   > $ yarn add classnames
 - classnames 간략 사용법 - 여러 가지 종류의 파라미터를 조합해 CSS 클래스를 설정 할 수 있다
   classnamesEx.js
+
   ```jsx
   // classnames 간략 사용법
   import classNames from "classnames";
@@ -706,7 +712,9 @@ export default App;
 
   // 여러 가지 종류의 파라미터를 조합해 CSS 클래스를 설정 할 수 있다
   ```
+
 - props 값에 따라 다른 스타일 주기 예시
+
   ```jsx
   // props 값에 따라 다른 스타일 주기
   const classnamesMycom = ({ highlighted, theme }) => (
@@ -834,6 +842,295 @@ export default CSSModule;
 :local {
 	.wrapper { ... }
 }
+```
+
+---
+
+## 9.4 styled-components
+
+- 스타일을 자바스크립트 파일에 내장시키는 방식. 스타일을 작성함과 동시에 해당 스타일이 적용된 컴포넌트를 만들 수 있게 해줌
+- 자바스크립트 파일 하나에 스타일까지 작성할 수 있기 때문에 .css 또는 .scss 가진 스타일 파일 안 만들어도 됨
+- styled-components와 일반 classNames를 사용하는 CSS/Sass를 비교했을 때, 가장 큰 장점은 props 값으로 전달해 주는 값을 쉽게 스타일에 적용할 수 있다는 것
+- 컴포넌트 스타일링의 또 다른 패러다임 자바스크립트 파일 안에 스타일을 선언하는 방식
+  → ‘CSS-in JS’ 라고 부름
+  → 관련된 라이브러리 ‘https://github.com/MicheleBertoli/css-in-js’
+  → styled-components를 대체할 수 있는 라이브러리로는 현대 emotion이 대표적이며 작동 방식은 styled-comjponents와 비슷
+
+---
+
+### styled-components 사용하기
+
+1. 설치
+
+   > yarn add styled-components
+
+2. VSC 확장자 마켓에서 vscode-styled-components 설치(색상 정상적으로 입혀 가독성 높여줌)
+3. StyledComponents.js 파일 생성
+   - props로 넣어 준 값을 직접 전달해 줄 수 있음
+     - 스타일 쪽에서 컴포넌트에게 전달된 props 값 참조할 수 있음
+     - background 값에 props 조회해서 props.color 값 사용, color 값이 주어지지 않았을 때는 blue 기본 색상으로 설정
+   - & 문자로 Sass 처럼 자기 자신 선택 가능
+   - inverted 값이 true 일 때의 특정 스타일도 부여
+
+StyledComponents.js
+
+```jsx
+import styled, { css } from "styled-components";
+
+// VSC 마켓플레이스에서 vscode-styled-components 설치하면 색상 가독성 높아짐
+
+// props로 넣어 준 값을 직접 전달해 줄 수 있음
+// & 문자로 Sass 처럼 자기 자신 선택 가능
+// inverted 값이 true 일 때의 특정 스타일도 부여
+const Box = styled.div`
+  background: ${(props) => props.color || "blue"};
+  padding: 1rem;
+  display: flex;
+`;
+
+const Button = styled.button`
+  background: white;
+  color: black;
+  border-radius: 4px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  font-size: 1rem;
+  font-weight: 600;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  ${(props) =>
+    props.inverted &&
+    css`
+      background: none;
+      border: 2px solid white;
+      color: white;
+      &:hover {
+        background: white;
+        color: black;
+      }
+    `};
+
+  & + button {
+    margin-left: 1rem;
+  }
+`;
+
+const StyledComponents = () => {
+  <Box color="black">
+    <Button>안녕하세요</Button>
+    <Button inverted={true}>테두리만</Button>
+  </Box>;
+};
+
+export default StyledComponents;
+```
+
+App.js
+
+```jsx
+import React, { Component } from "react";
+import StyledComponents from "./StyledComponents";
+
+class App extends Component {
+  render() {
+    return (
+      <div>
+        <StyledComponents />
+      </div>
+    );
+  }
+}
+
+export default App;
+```
+
+---
+
+### 9.4.1 Tagged 템플릿 리터럴 (백틱기호 사용)
+
+- (백틱기호) Tagged 템플릿 리터럴을 사용하면 템플릿 사이사이에 들어가는 자바스크립트 객체나 함수의 원본 값을 그대로 추출할 수 있음
+- 이 속성을 사용하여 styled-components 로 만든 컴포넌트의 props를 스타일 쪽에서 쉽게 조회 할 수 있도록 함
+
+---
+
+### 9.4.2 스타일링된 엘리먼트 만들기
+
+- 컴포넌트 파일의 상단에서 styled 을 불러오고 **styled.태그명** 을 사용하여 구현
+  ```jsx
+  import styled from "styled-components";
+
+  const MyComponent = styled.div`
+    font-size: 2rem;
+  `;
+  ```
+- 뒤에 백틱 기호 사용사여 넣어주면, 해당 스타일이 적용된 div로 이루어진 리액트 컴포넌트가 생성
+- 그래서 나중에 <MyComponent>미리 만든 div지롱</MyComponent>와 같은 형태로 사용할 수 있음
+- 사용해야 할 태그명이 유동적이거나 특정 컴포넌트 자체에 스타일링해주고 싶다면
+  ```jsx
+  // 태그의 타입을 styled 함수의 인자로 전달
+  const MyInput = styled("input")`
+    background: gray;
+  `;
+
+  // 아예 컴포넌트 형식의 값을 넣어 줌
+  const StyledLink = styled(Link)`
+    color: blue;
+  `;
+  ```
+  → Link 컴포넌트는 리액트 라우터 내용에 나옴
+  → 이런식으로 컴포넌트를 styled의 파라미터에 넣는 경우에는 컴포넌트에 className props를 최상위 DOM의 className 값으로 설정하는 작업이 내부적으로 되어 있어야 함(밑 예시 코드 참고)
+  ```jsx
+  const Sample = ({ className }) => {
+    return <div className={className}>Samele</div>;
+  };
+
+  const StyledSample = styled(Sample)`
+    font-size: 2rem;
+  `;
+  ```
+
+---
+
+### 9.4.3 스타일에서 props 조회하기
+
+- props로 넣어 준 값을 직접 전달해 줄 수 있음
+  - 스타일 쪽에서 컴포넌트에게 전달된 props 값 참조할 수 있음
+  - background 값에 props 조회해서 props.color 값 사용, color 값이 주어지지 않았을 때는 blue 기본 색상으로 설정
+  ```jsx
+  const Box = styled.div`
+    /* props로 넣어 준 값을 직접 전달해 줄 수 있음 */
+    background: ${(props) => props.color || "blue"};
+    padding: 1rem;
+    display: flex;
+  `;
+  ```
+- 이렇게 만든 코드는 JSX에서 사용될 때 다음과 같이 color 값을 props로 넣어 줄 수 있음
+  ```jsx
+  <Box color="black">(...)</Box>
+  ```
+
+---
+
+### 9.4.4 props에 따른 조건부 스타일링
+
+- 일반 CSS 클래스 사용 시 → 조건부 스타일링 className 사용
+- styled-components → 조건부 스타일링 간단하게 props로 처리
+- 스타일 코드 여러 줄을 props에 따라 넣어 주어야 할 때는 CSS를 styled-components에서 불러와야 함
+  ```jsx
+  ${props =>
+      props.inverted &&
+      **css**`
+      background: none;
+      border: 2px solid white;
+      color: white;
+      &:hover {
+        background: white;
+        color: black;
+      }
+    `};
+  ```
+  - 조건부 스타일링 할 시 넣는 여러 줄의 코드에서 props 참조 할 때 → 반드시 CSS 로 감싸주어 Tagged 템플릿 리터럴 사용해주기
+    ```jsx
+    // 조건부 스타일링 할 시 넣는 여러 줄의 코드에서 props 참조 안 할 때 → CSS 안 불러도 됨
+    ${props =>
+        props.inverted &&
+    		`
+        background: none;
+        border: 2px solid white;
+        color: white;
+        &:hover {
+          background: white;
+          color: black;
+        }
+      `};
+    ```
+    - 만약 CSS를 사용하지 않고 다음과 같이 바로 문자열을 넣어도 작동하기는 하지만 해당 내용이 그저 문자열로만 취급됨 → VS Code 확장 프로그램에서 신택스 하이라이팅이 안 됨
+    - 또한 치명적 단점은 Tagged 템플릿 리터럴이 아니기 때문에 함수를 받아 사용하지 못해 해당 부분에서는 props 값을 사용하지 못 함
+    - 조건부 스타일링 할 시 넣는 여러 줄의 코드에서 props 참조 안 할 때 → CSS 안 불러도 됨
+
+---
+
+### 9.4.5 반응형 디자인
+
+- 일반 CSS와 똑같이 media 쿼리(query) 사용
+  → 기본적으로 가로 크리 1024px 에 가운데 정렬을 하고
+  → 가로 크기가 작아짐에 따라 크기를 줄이고
+  → 768px 미만이 되면 꽉 채웁니다.
+
+```jsx
+const Box = styled.div`
+  background: ${(props) => props.color || "blue"};
+  padding: 1rem;
+  display: flex;
+
+  /* 기본적으로 가로 크리 1024px 에 가운데 정렬을 하고
+      가로 크기가 작아짐에 따라 크기를 줄이고
+      768px 미만이 되면 꽉 채웁니다. */
+  width: 1024px;
+  margin: 0 auto;
+  @media (max-width: 1024px) {
+    width: 768;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+```
+
+---
+
+- 컴포넌트마다 반복 힘듦 → 함수화하여 사용 ⇒ styled-components 메뉴얼에서 지공하는 유틸 함수 사용
+- 아예 다른 파일로 모듈화한 뒤 편하게 여기저기서 불러 사용
+  - size 객체에 다라 자동으로 media 쿼리 함수 만들어 줌
+  - 참고 : ‘[https://styled-components.com/docs/advanced#media-templates](https://styled-components.com/docs/advanced#media-templates)’
+
+```jsx
+// ### 반응형 디자인
+// - 일반 CSS와 똑같이 media 쿼리(query) 사용
+// - 컴포넌트마다 반복 힘듦 → 함수화하여 사용 ⇒ styled-components 메뉴얼에서 지공하는 유틸 함수 사용
+//     - size 객체에 다라 자동으로 media 쿼리 함수 만들어 줌
+//     - 참고 : ‘[https://styled-components.com/docs/advanced#media-templates](https://styled-components.com/docs/advanced#media-templates)’
+const sizes = {
+  desktop: 1024,
+  tablet: 768,
+};
+const media = Object.keys(sizes).reduce((acc, label) => {
+  acc[label] = (...args) => css`
+    @media (max-width: ${sizes[label] / 16}em) {
+      ${css(...args)};
+    }
+  `;
+
+  return acc;
+}, []);
+
+const Box = styled.div`
+  background: ${(props) => props.color || "blue"};
+  padding: 1rem;
+  display: flex;
+
+  /* 기본적으로 가로 크리 1024px 에 가운데 정렬을 하고
+      가로 크기가 작아짐에 따라 크기를 줄이고
+      768px 미만이 되면 꽉 채웁니다. */
+  width: 1024px;
+  margin: 0 auto;
+  /*
+  @media (max-width: 1024px) {
+    width: 768;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+  */
+  ${media.desktop`width: 768px;`}
+  ${media.tablet`width: 100%;`}
+`;
 ```
 
 ---
